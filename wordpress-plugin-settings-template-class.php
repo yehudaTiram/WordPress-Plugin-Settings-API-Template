@@ -161,26 +161,38 @@ class WordPress_Plugin_Template_Settings {
 	}
 
 
-	/**
-	 * Options getter
-	 * @return array Options, either saved or default ones.
-	 */
-	public function get_options() {
-		$options = get_option($this->plugin_slug);
+      /**
+     * Options getter
+     * @return array Options, either saved or default ones.
+     */
+    public function get_options()
+    {
+        $options = get_option($this->plugin_name);
+        if (!$options && is_array($this->settings)) {
+            $options = array();
+            foreach ($this->settings as $section => $data) {
+                foreach ($data['fields'] as $field) {
+                    $options[$field['id']] = $field['default'];
+                }
+            }
 
-		if ( !$options && is_array( $this->settings ) ) {
-			$options = Array();
-			foreach( $this->settings as $section => $data ) {
-				foreach( $data['fields'] as $field ) {
-					$options[ $field['id'] ] = $field['default'];
-				}
-			}
+            add_option($this->plugin_name, $options);
+        }
+        elseif ($options && is_array($this->settings)) {
+            foreach ($this->settings as $section => $data) {
+                foreach ($data['fields'] as $field) {
+                    if ( ! array_key_exists($field['id'], $options)) {
+                        $options[$field['id']] = $field['default'];
+                    }                    
+                }
+            }
 
-			add_option( $this->plugin_slug, $options );
-		}
+            add_option($this->plugin_name, $options);
+        }
 
-		return $options;
-	}
+
+        return $options;
+    }
 
 	/**
 	 * Register plugin settings
