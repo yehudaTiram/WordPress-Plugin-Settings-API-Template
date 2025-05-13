@@ -258,6 +258,8 @@ class WordPress_Plugin_Template_Settings {
 				if( $data && 'on' == $data ){
 					$checked = 'checked="checked"';
 				}
+				// Add a hidden field to ensure a value is sent even when unchecked
+                		$html .= '<input type="hidden" name="' . esc_attr($option_name) . '" value="off" />';
 				$html .= '<input id="' . esc_attr( $field['id'] ) . '" type="' . $field['type'] . '" name="' . esc_attr( $option_name ) . '" ' . $checked . '/>' . "\n";
 			break;
 
